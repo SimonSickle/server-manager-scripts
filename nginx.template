@@ -1,0 +1,28 @@
+server {
+    listen       IP_ADDR:80;
+    server_name  www.URL URL;
+
+    root ROOT_DIR;
+
+    location / {
+        index index.php index.html;
+	try_files $uri $uri/ /index.php?$args;
+    }
+
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_pass   unix:PHP_SOCKET.sock;
+        fastcgi_index  index.php;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+	fastcgi_intercept_errors on;
+        include        fastcgi_params;
+    }
+
+    # deny access to .htaccess files, if Apache's document root
+    # concurs with nginx's one
+    #
+    location ~ /\.ht {
+        deny  all;
+    }
+}
+
